@@ -5,8 +5,12 @@ const http  = require('http');
 const https = require('https');
 const fs    = require('fs');
 const Path  = require('path');
-const { execFile } = require('child_process');
 const URL   = require('url').URL;
+
+/* Shared ADO auth + REST helpers (auth, API version, JSON fetch with
+   informative errors). Blob downloading (below) stays local — only this
+   script needs it. */
+const ado = require('./ado-client');
 
 function parseArgs(args) {
     var o = {}, i = 0;
@@ -30,49 +34,12 @@ function parseArgs(args) {
     return o;
 }
 
-/* Azure CLI Bearer token with PAT fallback */
-
-
-var __ac = null, __ae = 0;
-
-async function getBearer() {
-  if(__ac && Date.now() < __ae) return {token:__ac, type:'bearer'};
-  
-  var azScope = ['https://app.vssps.visualstudio.com/.default', 'https://management.azure.com/'];
-  for(var r=0;r<azScope.length;r++){
-    try {
-        var d = await new Promise(function(ok, no) {
-            execFile('az', ['account','get-access-token','-o','json','--scope', azScope[r]], 
-                {timeout:10000}, function(er, out, sd) {
-                    if(er || out.trim().length<50) return no(sd||'Az not avail');
-                    ok(JSON.parse(out));
-                });
-        });
-        var tok = d.access_token||d.accessToken;
-        if(tok && tok.startsWith('eyJ')){
-            __ac=tok; __ae=Date.now()+480000;
-            return {token:tok, type:'bearer'};
-        }
-    } catch(e) {}
-  }
-  
-  var pat = process.env.AZURE_DEVOPS_EXT_PAT || process.env.ADO_TOKEN;
-  if(!pat) throw new Error('No Azure CLI token + no AZURE_DEVOPS_EXT_PAT');
-  return {token:pat, type:'pat'};
-}
-
-function aH(auth){return auth.type==='bearer'?'Bearer '+auth.token:'Basic '+Buffer.from(':'+auth.token).toString('base64');}
-
-
-/* JSON fetch for _apis endpoints */
-function jsonFetch(rp, au) {
-    return new Promise(function(ok, no) {
-        https.get({hostname:'dev.azure.com', path:rp,
-            headers:{Accept:'application/json', Authorization:aH(au)}},
-            function(res) { var b=''; res.on('data',function(x){b+=x}); 
-                res.on('end',function(){if(res.statusCode>=200&&res.statusCode<300)ok(JSON.parse(b));else no(new Error('ADO '+res.statusCode))})}).on('error',no);
-    });
-}
+/* Auth + JSON fetch are provided by the shared ADO client (ado-client.js),
+   so this script uses the same version and error reporting as the others.
+   The aliases below keep existing call sites (`aH`, `jsonFetch`) working. */
+var getBearer = ado.getAuth;
+function aH(auth){ return ado.makeAuthHeader(auth); }
+function jsonFetch(rp, au){ return ado.jsonFetch(rp, au); }
 
 
 /* download binary blob with redirect following */

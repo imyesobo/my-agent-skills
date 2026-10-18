@@ -3,9 +3,12 @@
 
 // check-workitem-state.js: Check if a work item is in an expected state.
 // Usage: node check-workitem-state.js <org> <project> <id> --state ExpectedState [--json]
+//
+// Exit code reflects the result (useful as a pre-condition gate):
+//   0 = work item IS in the expected state
+//   1 = work item is NOT in the expected state (or an error occurred)
 
-const https = require('https');
-const { execFile } = require('child_process');
+const ado = require('./ado-client');
 
 function getArg(name) {
   var args = process.argv.slice(2);
@@ -14,23 +17,6 @@ function getArg(name) {
   }
   return null;
 }
-
-function getAuth() {
-  var vs = ['AZURE_DEVOPS_EXT_PAT', 'ADO_TOKEN'];
-  for (var i in vs) { var v = process.env[vs[i]]; if (v) return {token:v,type:'pat'};}
-
-  // Try Azure CLI bearer token
-  return new Promise(function(ok, no) {
-    execFile('az',['account','get-access-token','-o','json','--scope','https://app.vssps.visualstudio.com/.default'], {timeout:10000}, 
-      function(er,out,sd){if(er||out.trim().length<40)return no(sd||'Azure CLI not avail');
-        try{var d=JSON.parse(out),t=d.access_token||d.accessToken;if(t&&t.startsWith('eyJ'))return ok({token:t,type:'bearer'});}catch(e){}
-        return no('No Azure token');});
-  }).then(function(auth){return auth;}).catch(function(){
-    throw new Error('Azure CLI failed and no AZURE_DEVOPS_EXT_PAT set');
-  });
-}
-
-function makeAuthHeader(auth){ return auth.type==='bearer'?'Bearer '+auth.token:'Basic '+Buffer.from(':'+auth.token).toString('base64'); }
 
 var org = process.argv[2], proj = process.argv[3], wid = parseInt(process.argv[4], 10);
 if (!org || !proj || isNaN(wid)) {
@@ -46,39 +32,23 @@ if (!expectedState) {
 
 var jsonOut = process.argv.includes('--json');
 
-getAuth().then(function(auth){
-  var options = {
-    hostname: 'dev.azure.com',
-    path: '/' + org + '/' + proj + '/_apis/wit/workitems/' + wid + '?api-version=7.1-preview.1',
-    headers: { Accept: 'application/json', Authorization: makeAuthHeader(auth) }
-  };
-
-  https.get(options, function(res) {
-    var data = '';
-    res.on('data', function(d) { data += d; });
-    res.on('end', function() {
-      try {
-        var wi = JSON.parse(data);
+ado.getAuth().then(function(auth){
+  var path = '/' + org + '/' + proj + '/_apis/wit/workitems/' + wid
+          + '?api-version=' + ado.API_VERSION;
+  return ado.jsonFetch(path, auth).then(function(wi) {
         var fields = wi.fields || {};
         var current = fields['System.State'];
+        var passed = current === expectedState;
 
         if (jsonOut) {
-          console.log(JSON.stringify({ passed: current===expectedState, current:current, expected:expectedState }));
-          process.exit(0);
+          console.log(JSON.stringify({ passed: passed, current:current, expected:expectedState }));
         } else {
-          if (current === expectedState) {
+          if (passed) {
             console.error('PASS: Work item #' + wid + ' is in state "' + current + '"');
           } else {
             console.error('FAIL: Work item #' + wid + ' is "' + current + '" (expected "' + expectedState + '")');
           }
         }
-      } catch (e) {
-        console.error('Parse error:', e.message);
-        process.exit(2);
-      }
-    });
-  }).on('error', function(e) {
-    console.error('API error:', e.message);
-    process.exit(3);
+        process.exit(passed ? 0 : 1);
   });
 }).catch(function(e){console.error('[ERROR]',e.message);process.exit(1);});

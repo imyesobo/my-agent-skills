@@ -101,13 +101,19 @@ node scripts/check-workitem-state.js <org_name> <project_name> <workitem_id> --s
 
 **Optional flags:**
 - `--state StateName` - Required: the expected state (e.g., "Active", "Closed", "Done")
-- `--exit-code` (default) - Exits with status code 0 if in correct state, 1 otherwise
 - `--json` - Output as JSON with pass/fail result
+
+**Exit codes** — always reflect the check result, so this script works as a pre-condition gate:
+- `0` - work item IS in the expected state
+- `1` - work item is NOT in the expected state, or an error occurred (auth failure, network, 404, etc.)
+
+On any error the script prints the HTTP status **and the server's error body** to stderr (e.g. a `TF401232: Work item ... does not exist` message), rather than a bare status code.
 
 **Example:**
 ```bash
-node scripts/check-workitem-state.js my-org MyProject 12345 --state Active --json
-node scripts/check-workitem-state.js my-org MyProject 12345 --state "To Do" --exit-code
+node scripts/check-workitem-state.js my-org myproject 42 --state Active --json
+# Gate a following step on the state check:
+node scripts/check-workitem-state.js my-org myproject 42 --state "To Do" && echo "ready to implement"
 ```
 
 ### `scripts/list-linked-items.js` - List Linked Work Items
@@ -141,14 +147,15 @@ node scripts/list-linked-items.js my-org MyProject 12345 -r "System.LinkTypes.Hi
    ```bash
    node scripts/check-workitem-state.js myorg myproject 42 --state "Active" --json
    ```
-   If this returns `{"passed": false, "message": "Work item is not in expected state. Current state: Closed"}`, handle accordingly (e.g., check if someone has already implemented the fix).
+   This returns `{"passed": true|false, "current": "<state>", "expected": "Active"}` and exits `0` when passed, `1` when not (or on error). If `passed` is `false`, handle accordingly (e.g., check if someone has already implemented the fix).
 
 ## Script Reference
 
 | Script | Purpose |
 |--------|---------|
 | `get-workitem.js` | Main script - retrieve complete work item details and history |
-| `check-workitem-state.js` | Check if a work item is in an expected state |
-| `list-linked-items.js` | List all linked/related work items |
+| `check-workitem-state.js` | Check if a work item is in an expected state (exit code = pass/fail) |
+| `list-linked-items.js` | List all linked/related work items (prints a clear "no linked items" message when none exist) |
+| `ado-client.js` | Shared module - auth, `api-version`, and JSON fetch used by all three scripts above |
 
-All scripts output machine-readable data suitable for further processing.
+All scripts output machine-readable data suitable for further processing. They share a single `api-version` (currently `6.0`) and surface the server's error body on failure, so a `404` shows *why* rather than a bare status code.
