@@ -14,7 +14,7 @@ The tests verify that:
 
 ```bash
 # Run all tests
-cd .agents/skills/intake/azure-devops/test
+cd skills/intake/azure-devops/test
 chmod +x run-tests.sh && ./run-tests.sh
 
 # Or run individual tests

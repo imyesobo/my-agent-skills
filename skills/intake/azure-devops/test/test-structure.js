@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // Test script structure and syntax for Azure DevOps skill
-// Located at: .agents/skills/intake/azure-devops/test/test-structure.js
+// Located at: skills/intake/azure-devops/test/test-structure.js
 
 'use strict';
 

@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "my-agent-skills",
+  "description": "Personal skills and agents: intake skills (Azure DevOps) and a plan-with-Opus, implement-with-Sonnet delegating agent.",
+  "version": "0.1.0",
+  "author": { "name": "imyesobo" },
+  "repository": "https://github.com/imyesobo/my-agent-skills",
+  "keywords": ["skills", "agents", "intake", "azure-devops", "planning"]
+}
