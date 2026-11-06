@@ -135,6 +135,49 @@ pays, transfers, deletes or changes settings runs unless you explicitly ask for 
 one with `dynamic_workflows_manage` (operation `author`, name `plan-then-implement`) and run it
 with `{ task: "…", skipReview?: false, planner?: "<model id>", implementer?: "<model id>" }`.
 
+## Favourite skills from elsewhere
+
+Third-party skills I install alongside this plugin. `gh skill` takes the skill as a **positional**
+argument and the exact path skips the repo tree walk; skills.sh uses **`--skill`**. Refs and sizes
+below were checked 2026-11-06 — upstreams move, so re-check a line before trusting it.
+
+| Skill | Source · license | What it is for | Resolves to |
+|---|---|---|---|
+| `azure-devops-cli` | [github/awesome-copilot](https://github.com/github/awesome-copilot) · MIT | Azure DevOps CLI: projects, repos, pipelines, builds, PRs, work items — the CLI half of [intake-azure-devops](skills/intake-azure-devops/SKILL.md) | `main@797337f3` · 80 KB |
+| `msgraph` | [merill/msgraph](https://github.com/merill/msgraph) · MIT | Microsoft Graph API knowledge resolved locally: 27,700+ endpoints, schemas, samples, no network calls | `v1.0.19` · **109 MB** |
+| `confluence` | [odyssey4me/agent-skills](https://github.com/odyssey4me/agent-skills) · Apache-2.0 | Confluence pages and spaces: CQL search, read/create/update with Markdown | `0.7.0` · 100 KB |
+| `gh-cli` | [github/awesome-copilot](https://github.com/github/awesome-copilot) · **deleted upstream 2026-05-14, pinned only** | Full `gh` reference: repos, issues, PRs, Actions, releases, gists, codespaces | `e9a7805e` · 40 KB |
+
+```bash
+# gh skill — user scope, so they are available in every project
+gh skill install github/awesome-copilot  skills/azure-devops-cli --agent github-copilot --scope user
+gh skill install merill/msgraph          skills/msgraph          --agent github-copilot --scope user
+gh skill install odyssey4me/agent-skills skills/confluence       --agent github-copilot --scope user
+gh skill install github/awesome-copilot 'skills/gh-cli@e9a7805e2b1dbda5ad4d0cc9be1fc3ef6273e115' --agent github-copilot --scope user
+
+# skills.sh — same three by name; gh-cli needs a tree URL because its ref is pinned
+npx skills add github/awesome-copilot  --skill azure-devops-cli
+npx skills add merill/msgraph          --skill msgraph
+npx skills add odyssey4me/agent-skills --skill confluence
+npx skills add https://github.com/github/awesome-copilot/tree/e9a7805e2b1dbda5ad4d0cc9be1fc3ef6273e115/skills/gh-cli
+```
+
+- **`msgraph` costs 109 MB** — it carries the whole Graph corpus locally. `gh skill` copies and
+  `npx skills` symlinks, so install that one with skills.sh unless you want a copy per machine.
+  The others are pin-able too: `skills/msgraph@v1.0.19`, `--pin 0.7.0`.
+- **`gh-cli` is a dead pin.** skills.sh still [pages it](https://www.skills.sh/github/awesome-copilot/gh-cli)
+  (21.2K installs) because its index keeps history, but the installer reads the repo: unpinned it
+  fails with `No matching skills found for: gh-cli`. Upstream removed it in `352def3c` (PR #1692)
+  because Copilot CLI ≥ 1.0.46 handles read-only `gh` commands natively — you are on 1.0.106, so it
+  is probably redundant; the pin above is the last commit that had it (2026-02-09) and its reference
+  text is frozen at `gh` 2.85.0.
+- To audit any line here:
+
+  ```bash
+  gh skill install <owner>/<repo> | column -t -s $'\t'                 # what that repo offers right now
+  gh api "repos/<owner>/<repo>/commits?path=skills/<name>&per_page=3"   # when it moved, and why
+  ```
+
 ## Conventions in this repo
 
 - **One skill = one immediate child of `skills/`.** Agent Plugins §7.1: a client treats each
