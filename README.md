@@ -9,6 +9,7 @@ client can install (GitHub Copilot CLI, VS Code, Cursor, Codex, Kiro, OpenHands,
   spec from what was recorded, and replays it until it passes — built for real sites with
   logins, 2FA and shadow DOM;
 - an **Azure DevOps** intake skill (work item details, relations, history, state);
+- a **Figma** intake skill (REST API + Code Connect, no MCP: layout, tokens, components, images);
 - a **session-improve** review skill: what to change in this collection so the next session
   spends fewer credits;
 - a **plan-and-delegate** agent: plan with the expensive model, implement with the cheap one,
@@ -27,7 +28,7 @@ copilot plugin install my-agent-skills@imyesobo-agent-skills
 copilot plugin list
 ```
 
-Verified on Copilot CLI 1.0.106: installs **6 skills** and registers both custom agents as
+Verified on Copilot CLI 1.0.106: installs **7 skills** and registers both custom agents as
 `my-agent-skills:plan-and-delegate` and `my-agent-skills:playwright-test-recorder`.
 
 To hack on the plugin itself, point the marketplace at your working copy — path-sourced
@@ -68,7 +69,7 @@ installed by `gh skill` — use the plugin install above, or the `curl` fallback
 ### 3. `npx skills` (the [skills.sh](https://skills.sh) CLI, Node ≥ 22.20)
 
 ```bash
-npx skills add imyesobo/my-agent-skills --list          # lists the 6 skills, installs nothing
+npx skills add imyesobo/my-agent-skills --list          # lists the 7 skills, installs nothing
 npx skills add imyesobo/my-agent-skills --skill intake-azure-devops -a pi
 npx skills add imyesobo/my-agent-skills --all           # every skill × every detected agent
 npx skills add imyesobo/my-agent-skills --skill playwright-spec-replay -g -a claude-code -y
@@ -118,6 +119,7 @@ skills/                                     every skill is ONE immediate child d
   playwright-spec-authoring/                author: running list → tests/<name>.spec.ts (+ templates)
   playwright-spec-replay/                   replay: run headed, read the failure, fix, re-run
   intake-azure-devops/                      ADO work items: details, relations, history, state
+  intake-figma/                             Figma designs via REST API + Code Connect (no MCP)
   session-improve/                          review the session for credit-saving changes
     references/session-improve.md           the review prompt itself
 com.github.copilot/                         Copilot-owned extension namespace (ignored by others)
