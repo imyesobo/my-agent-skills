@@ -135,6 +135,55 @@ pays, transfers, deletes or changes settings runs unless you explicitly ask for 
 one with `dynamic_workflows_manage` (operation `author`, name `plan-then-implement`) and run it
 with `{ task: "…", skipReview?: false, planner?: "<model id>", implementer?: "<model id>" }`.
 
+## Favourite skills from elsewhere
+
+Not mine — these are the ones I install alongside this plugin, so I keep the list here. Two
+things to know: `gh skill` takes the skill as a **positional** argument (the exact path is
+faster on a huge repo — it skips the full tree walk), while the skills.sh CLI uses **`--skill`**.
+
+| Skill | Source | What it is for | Pairs with |
+|---|---|---|---|
+| `azure-devops-cli` | [github/awesome-copilot](https://github.com/github/awesome-copilot) · MIT | Azure DevOps CLI: projects, repos, pipelines, builds, PRs, work items, service endpoints | the CLI half of [intake-azure-devops](skills/intake-azure-devops/SKILL.md) |
+| `msgraph` | [merill/msgraph](https://github.com/merill/msgraph) · MIT | Microsoft Graph API knowledge resolved **locally**: 27,700+ endpoints, resource schemas, samples — no network calls | Graph-backed intake steps |
+| `confluence` | [odyssey4me/agent-skills](https://github.com/odyssey4me/agent-skills) · Apache-2.0 | Confluence pages/spaces via CQL search, read/create/update with Markdown | Atlassian-side intake |
+
+```bash
+# user scope → available in every project
+gh skill install github/awesome-copilot    skills/azure-devops-cli --agent github-copilot --scope user
+gh skill install merill/msgraph            skills/msgraph          --agent github-copilot --scope user
+gh skill install odyssey4me/agent-skills   skills/confluence       --agent github-copilot --scope user
+
+# same three with the skills.sh CLI
+npx skills add github/awesome-copilot  --skill azure-devops-cli
+npx skills add merill/msgraph          --skill msgraph
+npx skills add odyssey4me/agent-skills --skill confluence
+```
+
+Verified 2026-11-06 — all three install (gh resolves an upstream tag when there is one):
+
+| Repo | Ref used | On disk |
+|---|---|---|
+| github/awesome-copilot | `main@797337f3` (no tag) | 80 KB |
+| merill/msgraph | `v1.0.19` | **109 MB** — the whole local Graph corpus |
+| odyssey4me/agent-skills | `0.7.0` | 100 KB |
+
+Pin with `skills/msgraph@v1.0.19` or `--pin 0.7.0`. Note `gh skill` **copies** and `npx skills`
+**symlinks** by default: a user-scope `gh skill` install of `msgraph` costs 109 MB per machine,
+whereas skills.sh links it back to one clone.
+
+> **`gh-cli` is not installable** — `github/awesome-copilot` has no `skills/gh-cli` (475 skills
+> checked). The path only appears as a link inside the repo's own generated suggestion table in
+> `skills/suggest-awesome-github-copilot-skills/SKILL.md`, which is stale. The real
+> GitHub-CLI-adjacent skills there are `github-release`, `github-issues`, `gh-attach`,
+> `git-commit` and `cli-mastery` — pick one and it goes in the table above.
+
+Re-check a line before editing it (the upstream repos move):
+
+```bash
+gh api "repos/<owner>/<repo>/git/trees/HEAD?recursive=1" -q '.tree[].path' | grep 'skills/<name>/SKILL.md'
+gh skill install <owner>/<repo> | column -t -s $'\t'      # what that repo offers right now
+```
+
 ## Conventions in this repo
 
 - **One skill = one immediate child of `skills/`.** Agent Plugins §7.1: a client treats each
