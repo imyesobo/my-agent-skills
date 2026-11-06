@@ -1,9 +1,13 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "my-agent-skills",
-  "description": "Personal skills and agents: intake skills (Azure DevOps), a plan-with-Opus, implement-with-Sonnet delegating agent, and a Playwright agent with record/author/replay skills for building end-to-end specs against real websites.",
-  "version": "0.2.0",
+  "description": "Portable Agent Plugin: a Playwright record/author/replay toolkit for real sites with logins and 2FA, an Azure DevOps intake skill, a session-improve review skill, plus a plan-with-Opus implement-with-Sonnet delegating agent for Copilot CLI.",
+  "version": "0.3.0",
   "author": { "name": "imyesobo" },
+  "homepage": "https://github.com/imyesobo/my-agent-skills#readme",
   "repository": "https://github.com/imyesobo/my-agent-skills",
-  "keywords": ["skills", "agents", "intake", "azure-devops", "planning", "playwright", "e2e", "browser-automation"]
+  "keywords": [
+    "skills", "agents", "intake", "azure-devops", "planning",
+    "playwright", "e2e", "browser-automation", "session-improve"
+  ]
 }

@@ -1,5 +1,7 @@
 ---
 name: playwright-cli-recording
+metadata:
+  phase: playwright
 description: "Drive a headed browser with playwright-cli to record a user journey on any website step by step, including shadow-DOM / web-component sites. Use when: open a headed browser, playwright-cli open/snapshot/click/fill/run-code/eval, keep a running list of '### Ran Playwright code', wait for the user to log in or pass 2FA/captcha, state-save .auth/state.json, an element is not clickable or has no accessible name, intercepts pointer events, strict mode violation, find the clickable ancestor."
 argument-hint: "Start URL (first time) or the next step the user wants"
 ---
