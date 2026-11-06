@@ -1,9 +1,10 @@
 ---
 name: playwright-spec-replay
+description: "Run a Playwright spec headed, coordinate manual login / 2FA with the user, read the failure (log, error-context.md, trace) and apply the matching fix pattern, then re-run until it passes. Use when: replay the spec, run the test, npx playwright test, the script is stuck, test failed, strict mode violation, intercepts pointer events, waiting for event popup, Login required, Security validation required, element not found after goBack."
+license: MIT
+argument-hint: "tests/<file>.spec.ts"
 metadata:
   phase: playwright
-description: "Run a Playwright spec headed, coordinate manual login / 2FA with the user, read the failure (log, error-context.md, trace) and apply the matching fix pattern, then re-run until it passes. Use when: replay the spec, run the test, npx playwright test, the script is stuck, test failed, strict mode violation, intercepts pointer events, waiting for event popup, Login required, Security validation required, element not found after goBack."
-argument-hint: "tests/<file>.spec.ts"
 ---
 
 # Replaying a spec until green

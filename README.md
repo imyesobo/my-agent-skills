@@ -109,6 +109,7 @@ skills gets the same behaviour from install 2 or 3 alone.
 ## What's in here
 
 ```
+LICENSE                                     MIT — skills, agents and workflows are yours to copy
 plugin.json                                 Agent Plugins manifest ($schema 1.0.0, closed schema)
 .github/plugin/marketplace.json             Copilot CLI marketplace catalog for this repo
 skills/                                     every skill is ONE immediate child dir — see below
@@ -147,6 +148,15 @@ with `{ task: "…", skipReview?: false, planner?: "<model id>", implementer?: "
 - Anything a single client owns goes in a top-level reverse-domain directory
   (`com.github.copilot/…`) — Agent Plugins §8.2. Nothing else at the root: the manifest schema
   is closed and the only portable component locations are `skills/` and `mcp.json`.
+- Every skill declares `license: MIT` in its own frontmatter, because `gh skill install <repo> <skill>`
+  and `npx skills add --skill <name>` copy **only that skill directory** — the root `LICENSE` does not
+  travel with it, the frontmatter field does.
 - `gh skill publish --dry-run` validates the tree; `gh skill publish` (which needs no
   marketplace) adds the `agent-skills` topic and cuts a GitHub release — that tag is what
   `gh skill install` resolves and what you pin to.
+
+## License
+
+[MIT](LICENSE) — `Copyright (c) 2026 Jesus Espejo Arnas`. Declared as `license: MIT` (SPDX) in
+`plugin.json`, in the `.github/plugin/marketplace.json` catalog entry, and in each skill's
+`SKILL.md` frontmatter, so clients show it and single-skill installs carry it.

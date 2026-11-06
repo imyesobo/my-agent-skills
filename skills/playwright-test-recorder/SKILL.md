@@ -1,9 +1,10 @@
 ---
 name: playwright-test-recorder
+description: "Orchestrates recording, authoring and replaying a Playwright end-to-end spec for any website: drive a headed browser with playwright-cli step by step together with the user, write tests/<name>.spec.ts from the recorded steps, then replay it until it passes. Use when asked to record a test, explore a site in a browser with me, build an e2e test for a page, create the spec from what we just did, or replay an existing spec. Trigger phrases: record a test, drive the browser, playwright-cli open --headed, write the spec from the running list, replay the spec, shadow DOM locators, the user will log in."
+license: MIT
+argument-hint: "Start URL and the task, e.g. 'https://example.com — view the order history', or 'replay tests/orders.spec.ts'"
 metadata:
   phase: playwright
-description: "Orchestrates recording, authoring and replaying a Playwright end-to-end spec for any website: drive a headed browser with playwright-cli step by step together with the user, write tests/<name>.spec.ts from the recorded steps, then replay it until it passes. Use when asked to record a test, explore a site in a browser with me, build an e2e test for a page, create the spec from what we just did, or replay an existing spec. Trigger phrases: record a test, drive the browser, playwright-cli open --headed, write the spec from the running list, replay the spec, shadow DOM locators, the user will log in."
-argument-hint: "Start URL and the task, e.g. 'https://example.com — view the order history', or 'replay tests/orders.spec.ts'"
 ---
 You are a Playwright test recorder. You drive a **headed** browser with `playwright-cli` while the user watches and directs you, one instruction at a time. You keep a running list of the Playwright code that each action produced, and when the user says the task is done you write a `tests/<name>.spec.ts` that replays the journey with assertions. Then you run the spec and fix it until it passes.
 

@@ -1,8 +1,9 @@
 ---
 name: intake-azure-devops
+description: Retrieve Azure DevOps work item information, including details, relations, history, and linked items. Use when analyzing a work item before implementation or debugging Azure DevOps state.
+license: MIT
 metadata:
   phase: intake
-description: Retrieve Azure DevOps work item information, including details, relations, history, and linked items. Use when analyzing a work item before implementation or debugging Azure DevOps state.
 ---
 
 # Azure DevOps Skill

@@ -1,9 +1,10 @@
 ---
 name: playwright-spec-authoring
+description: "Turn a recorded running list of playwright-cli steps into a Playwright spec tests/<name>.spec.ts that loads storageState, contains no login or credentials, reuses or creates a per-site helpers file (manual-login wait, overlay dismissal, re-auth wait, downloads, popups, native print stub) and asserts every step. Use when: write the spec, generate the test file from the running list, add a section to an existing spec, which helper to use, what assertion to add after a step, create playwright.config.ts."
+license: MIT
+argument-hint: "Spec name and the running list (or 'add <section> to tests/<file>.spec.ts')"
 metadata:
   phase: playwright
-description: "Turn a recorded running list of playwright-cli steps into a Playwright spec tests/<name>.spec.ts that loads storageState, contains no login or credentials, reuses or creates a per-site helpers file (manual-login wait, overlay dismissal, re-auth wait, downloads, popups, native print stub) and asserts every step. Use when: write the spec, generate the test file from the running list, add a section to an existing spec, which helper to use, what assertion to add after a step, create playwright.config.ts."
-argument-hint: "Spec name and the running list (or 'add <section> to tests/<file>.spec.ts')"
 ---
 
 # Writing a spec from a running list

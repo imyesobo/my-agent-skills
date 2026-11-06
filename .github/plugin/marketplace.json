@@ -16,6 +16,7 @@
       "author": { "name": "imyesobo", "url": "https://github.com/imyesobo" },
       "repository": "https://github.com/imyesobo/my-agent-skills",
       "homepage": "https://github.com/imyesobo/my-agent-skills#readme",
+      "license": "MIT",
       "keywords": [
         "skills", "agents", "intake", "azure-devops", "planning",
         "playwright", "e2e", "browser-automation", "session-improve"
