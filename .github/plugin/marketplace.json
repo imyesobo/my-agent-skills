@@ -1,0 +1,27 @@
+{
+  "name": "imyesobo-agent-skills",
+  "metadata": {
+    "description": "My personal Agent Plugins marketplace: Playwright record/author/replay toolkit, Azure DevOps intake, session-improve review.",
+    "version": "0.3.0"
+  },
+  "owner": {
+    "name": "imyesobo",
+    "url": "https://github.com/imyesobo"
+  },
+  "plugins": [
+    {
+      "name": "my-agent-skills",
+      "description": "Portable Agent Plugin: a Playwright record/author/replay toolkit for real sites with logins and 2FA, an Azure DevOps intake skill, a session-improve review skill, plus a plan-with-Opus implement-with-Sonnet delegating agent for Copilot CLI.",
+      "version": "0.3.0",
+      "author": { "name": "imyesobo", "url": "https://github.com/imyesobo" },
+      "repository": "https://github.com/imyesobo/my-agent-skills",
+      "homepage": "https://github.com/imyesobo/my-agent-skills#readme",
+      "license": "MIT",
+      "keywords": [
+        "skills", "agents", "intake", "azure-devops", "planning",
+        "playwright", "e2e", "browser-automation", "session-improve"
+      ],
+      "source": "./"
+    }
+  ]
+}

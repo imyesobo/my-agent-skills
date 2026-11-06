@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // Test authentication for Azure DevOps skill  
-// Located at: skills/intake/azure-devops/test/test-authentication.js
+// Located at: skills/intake-azure-devops/test/test-authentication.js
 
 'use strict';
 
