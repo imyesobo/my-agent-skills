@@ -166,22 +166,41 @@ Verified 2026-11-06 — all three install (gh resolves an upstream tag when ther
 | github/awesome-copilot | `main@797337f3` (no tag) | 80 KB |
 | merill/msgraph | `v1.0.19` | **109 MB** — the whole local Graph corpus |
 | odyssey4me/agent-skills | `0.7.0` | 100 KB |
+| `gh-cli`, pinned (below) | `e9a7805e` | 40 KB |
 
 Pin with `skills/msgraph@v1.0.19` or `--pin 0.7.0`. Note `gh skill` **copies** and `npx skills`
 **symlinks** by default: a user-scope `gh skill` install of `msgraph` costs 109 MB per machine,
 whereas skills.sh links it back to one clone.
 
-> **`gh-cli` is not installable** — `github/awesome-copilot` has no `skills/gh-cli` (475 skills
-> checked). The path only appears as a link inside the repo's own generated suggestion table in
-> `skills/suggest-awesome-github-copilot-skills/SKILL.md`, which is stale. The real
-> GitHub-CLI-adjacent skills there are `github-release`, `github-issues`, `gh-attach`,
-> `git-commit` and `cli-mastery` — pick one and it goes in the table above.
+> **A skills.sh page is not proof it installs.** [`gh-cli`](https://www.skills.sh/github/awesome-copilot/gh-cli)
+> is still paged there — 21.2K installs, first seen Jan 2026 — but upstream **deleted it on
+> 2026-05-14** in `352def3c` (PR #1692): *“with the 1.0.46 release of CLI, there's built-in
+> handling around certain readonly gh commands, and combining with the generalised knowledge of
+> the models on how to work with gh, this skill is no longer needed.”* The index keeps history;
+> the installer reads the repo, so the unpinned commands fail:
+>
+> ```bash
+> npx skills add https://github.com/github/awesome-copilot --skill gh-cli   # No matching skills found for: gh-cli
+> gh skill install github/awesome-copilot gh-cli                            # Using ref main (797337f3) → skill "gh-cli" not found
+> ```
+>
+> It still installs **pinned to `e9a7805e`**, the last commit that contained it (2026-02-09) —
+> both verified end to end:
+>
+> ```bash
+> gh skill install github/awesome-copilot "skills/gh-cli@e9a7805e2b1dbda5ad4d0cc9be1fc3ef6273e115"
+> npx skills add https://github.com/github/awesome-copilot/tree/e9a7805e2b1dbda5ad4d0cc9be1fc3ef6273e115/skills/gh-cli
+> ```
+>
+> Given that removal rationale — and that Copilot CLI ≥ 1.0.46 handles read-only `gh` commands
+> natively — it may simply be redundant now; worth one session before pinning a dead skill.
 
 Re-check a line before editing it (the upstream repos move):
 
 ```bash
 gh api "repos/<owner>/<repo>/git/trees/HEAD?recursive=1" -q '.tree[].path' | grep 'skills/<name>/SKILL.md'
 gh skill install <owner>/<repo> | column -t -s $'\t'      # what that repo offers right now
+gh api "repos/<owner>/<repo>/commits?path=skills/<name>&per_page=3"   # when it moved, and why
 ```
 
 ## Conventions in this repo
