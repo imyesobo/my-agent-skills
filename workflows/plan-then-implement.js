@@ -1,11 +1,13 @@
 // plan-then-implement: plan with Claude Opus 5.5, pause for review, implement with Claude Sonnet 5.5.
 // Workflows are session-scoped. To use it, ask Copilot CLI to register this file via
 // dynamic_workflows_manage (operation "author") with name "plan-then-implement",
-// phases Plan / Review / Implement / Verify and argsSchema { task: string, skipReview?: boolean }.
+// phases Plan / Review / Implement / Verify and argsSchema { task: string, skipReview?: boolean, planner?: string, implementer?: string }.
+// planner/implementer are model IDs; defaults are claude-opus-5.5 and claude-sonnet-5.5.
 // Run it with args { task: "..." }; resume the paused run to start implementation.
 async (ctx) => {
-  const PLANNER = 'claude-opus-5.5';
-  const IMPLEMENTER = 'claude-sonnet-5.5';
+  const argModel = (v, d) => (typeof v === 'string' && v.trim() ? v.trim() : d);
+  const PLANNER = argModel(ctx.args && ctx.args.planner, 'claude-opus-5.5');
+  const IMPLEMENTER = argModel(ctx.args && ctx.args.implementer, 'claude-sonnet-5.5');
   const task = ctx.args && typeof ctx.args.task === 'string' ? ctx.args.task.trim() : '';
   if (!task) {
     return { ok: false, reason: 'args.task is required' };
